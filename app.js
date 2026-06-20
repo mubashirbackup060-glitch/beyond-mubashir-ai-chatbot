@@ -408,7 +408,7 @@ async function handleSend() {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                'HTTP-Referer': 'https://beyond-mubashir.local',
+                'HTTP-Referer': (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://beyond-mubashir.local',
                 'X-Title': 'Beyond Mubashir'
             },
             body: JSON.stringify({
