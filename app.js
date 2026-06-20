@@ -14,7 +14,7 @@ const state = {
 };
 
 // OpenRouter API Configuration
-const OPENROUTER_API_KEY = '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';
+const OPENROUTER_API_KEY = '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';
 
 // State Auto-Healing / Migrations for OpenRouter Model Selection
 const validModels = ['openai/gpt-4o-mini', 'openai/gpt-4o', 'meta-llama/llama-3.1-8b-instruct:free'];
