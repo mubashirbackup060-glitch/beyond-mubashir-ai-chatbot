@@ -4,7 +4,6 @@
 
 // Application State
 const state = {
-    apiKey: localStorage.getItem('bm_api_key') || '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',
     model: localStorage.getItem('bm_model') || 'openai/gpt-4o-mini',
     temperature: parseFloat(localStorage.getItem('bm_temperature')) || 0.7,
     voiceEnabled: localStorage.getItem('bm_voice_enabled') === 'true',
@@ -14,11 +13,10 @@ const state = {
     currentUtterance: null // Track current speaking audio to mute/stop it
 };
 
-// State Auto-Healing / Migrations for OpenRouter
-if (!state.apiKey || !state.apiKey.startsWith('sk-or-v1-')) {
-    state.apiKey = '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';
-    localStorage.setItem('bm_api_key', state.apiKey);
-}
+// OpenRouter API Configuration
+const OPENROUTER_API_KEY = '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';
+
+// State Auto-Healing / Migrations for OpenRouter Model Selection
 const validModels = ['openai/gpt-4o-mini', 'openai/gpt-4o', 'meta-llama/llama-3.1-8b-instruct:free'];
 if (!validModels.includes(state.model)) {
     state.model = 'openai/gpt-4o-mini';
@@ -32,8 +30,6 @@ const SYSTEM_PROMPT = `You are Mubashir, an intelligent, empathetic, and sophist
 const sidebar = document.getElementById('sidebar');
 const openSidebarBtn = document.getElementById('openSidebarBtn');
 const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-const apiKeyInput = document.getElementById('apiKeyInput');
-const toggleKeyVisibility = document.getElementById('toggleKeyVisibility');
 const modelSelect = document.getElementById('modelSelect');
 const tempSlider = document.getElementById('tempSlider');
 const tempVal = document.getElementById('tempVal');
@@ -51,15 +47,9 @@ const typingIndicator = document.getElementById('typingIndicator');
 const botStatusText = document.getElementById('botStatusText');
 const quickPromptsGrid = document.getElementById('quickPromptsGrid');
 
-const apiKeyModal = document.getElementById('apiKeyModal');
-const modalApiKeyInput = document.getElementById('modalApiKeyInput');
-const toggleModalKeyVisibility = document.getElementById('toggleModalKeyVisibility');
-const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
-
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Setup UI Values from State
-    apiKeyInput.value = state.apiKey;
     modelSelect.value = state.model;
     tempSlider.value = state.temperature;
     tempVal.textContent = state.temperature;
@@ -89,15 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
         speechSynthesis.onvoiceschanged = setupVoices;
     }
 
-    // 4. Check for API Key
-    if (!state.apiKey) {
-        openModal();
-    }
-
-    // 5. Initialize Lucide Icons
+    // 4. Initialize Lucide Icons
     lucide.createIcons();
     
-    // 6. Bind Event Listeners
+    // 5. Bind Event Listeners
     bindEvents();
 });
 
@@ -110,29 +95,11 @@ function closeSidebar() {
     sidebar.classList.remove('open');
 }
 
-function openModal() {
-    apiKeyModal.classList.add('open');
-    modalApiKeyInput.value = state.apiKey;
-}
-
-function closeModal() {
-    apiKeyModal.classList.remove('open');
-}
-
 // Bind Event Listeners
 function bindEvents() {
     // Sidebar
     openSidebarBtn.addEventListener('click', openSidebar);
     closeSidebarBtn.addEventListener('click', closeSidebar);
-    
-    // API Key Input change
-    apiKeyInput.addEventListener('change', (e) => {
-        saveApiKey(e.target.value);
-    });
-
-    toggleKeyVisibility.addEventListener('click', () => {
-        togglePasswordVisibility(apiKeyInput, toggleKeyVisibility);
-    });
 
     // Model Change
     modelSelect.addEventListener('change', (e) => {
@@ -215,20 +182,7 @@ function bindEvents() {
     // Export Chat Log
     exportChatBtn.addEventListener('click', exportChatLog);
 
-    // Modal Events
-    toggleModalKeyVisibility.addEventListener('click', () => {
-        togglePasswordVisibility(modalApiKeyInput, toggleModalKeyVisibility);
-    });
 
-    saveApiKeyBtn.addEventListener('click', () => {
-        const key = modalApiKeyInput.value.trim();
-        if (key) {
-            saveApiKey(key);
-            closeModal();
-        } else {
-            alert('Please enter a valid OpenAI API key to continue.');
-        }
-    });
 
     // Chat Actions
     sendBtn.addEventListener('click', handleSend);
@@ -275,22 +229,7 @@ function updateVoiceMuteButtonState(enabled) {
     lucide.createIcons();
 }
 
-function togglePasswordVisibility(inputEl, btnEl) {
-    if (inputEl.type === 'password') {
-        inputEl.type = 'text';
-        btnEl.innerHTML = '<i data-lucide="eye-off"></i>';
-    } else {
-        inputEl.type = 'password';
-        btnEl.innerHTML = '<i data-lucide="eye"></i>';
-    }
-    lucide.createIcons();
-}
 
-function saveApiKey(key) {
-    state.apiKey = key.trim();
-    localStorage.setItem('bm_api_key', state.apiKey);
-    apiKeyInput.value = state.apiKey;
-}
 
 // Voice setup using Web Speech API
 function setupVoices() {
@@ -420,11 +359,7 @@ async function handleSend() {
     const text = chatInput.value.trim();
     if (!text) return;
     
-    // Check key
-    if (!state.apiKey) {
-        openModal();
-        return;
-    }
+
     
     // Clear input
     chatInput.value = '';
@@ -469,7 +404,7 @@ async function handleSend() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${state.apiKey}`,
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
                 'HTTP-Referer': 'https://beyond-mubashir.local',
                 'X-Title': 'Beyond Mubashir'
             },
