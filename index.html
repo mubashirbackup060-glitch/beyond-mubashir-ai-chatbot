@@ -24,17 +24,6 @@
             </div>
             <div class="sidebar-content">
                 <div class="setting-group">
-                    <label for="apiKeyInput">OpenRouter API Key</label>
-                    <div class="input-with-action">
-                        <input type="password" id="apiKeyInput" placeholder="sk-or-v1-...">
-                        <button class="icon-btn toggle-visibility-btn" id="toggleKeyVisibility" title="Toggle Visibility">
-                            <i data-lucide="eye"></i>
-                        </button>
-                    </div>
-                    <small class="help-text">Saved locally in your browser's local storage.</small>
-                </div>
-
-                <div class="setting-group">
                     <label for="modelSelect">AI Model</label>
                     <select id="modelSelect">
                         <option value="openai/gpt-4o-mini" selected>GPT-4o Mini (Fast & Cost-Effective)</option>
@@ -173,33 +162,6 @@
                 </div>
             </footer>
         </main>
-    </div>
-
-    <!-- API Key Entry Modal -->
-    <div class="modal-overlay" id="apiKeyModal">
-        <div class="modal">
-            <div class="modal-icon">
-                <i data-lucide="key-round"></i>
-            </div>
-            <h2>Enter OpenRouter API Key</h2>
-            <p>To begin chatting with Mubashir, please configure your OpenRouter API Key. It is stored securely in your browser's local storage and sent directly to OpenRouter.</p>
-            
-            <div class="modal-input-group">
-                <div class="input-with-action">
-                    <input type="password" id="modalApiKeyInput" placeholder="sk-or-v1-...">
-                    <button class="icon-btn toggle-visibility-btn" id="toggleModalKeyVisibility" title="Toggle Visibility">
-                        <i data-lucide="eye"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn primary-btn" id="saveApiKeyBtn">Start Chatting</button>
-            </div>
-            <div class="modal-footer">
-                Don't have an API Key? <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">Get one here <i data-lucide="external-link" style="width:12px;height:12px;display:inline-block;vertical-align:middle;"></i></a>
-            </div>
-        </div>
     </div>
 
     <!-- JS script -->
