@@ -2,6 +2,9 @@
  * Beyond Mubashir - Chatbot Application Logic
  */
 
+// Clean up legacy API key storage to prevent browser cache interference
+localStorage.removeItem('bm_api_key');
+
 // Application State
 const state = {
     model: localStorage.getItem('bm_model') || 'openai/gpt-4o-mini',
