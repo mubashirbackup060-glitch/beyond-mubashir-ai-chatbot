@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Mubashir — Premium AI Companion</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Settings -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Configuration</h2>
+                <button class="icon-btn close-sidebar-btn" id="closeSidebarBtn" title="Close Settings">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <div class="setting-group">
+                    <label for="apiKeyInput">OpenRouter API Key</label>
+                    <div class="input-with-action">
+                        <input type="password" id="apiKeyInput" placeholder="sk-or-v1-...">
+                        <button class="icon-btn toggle-visibility-btn" id="toggleKeyVisibility" title="Toggle Visibility">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                    <small class="help-text">Saved locally in your browser's local storage.</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="modelSelect">AI Model</label>
+                    <select id="modelSelect">
+                        <option value="openai/gpt-4o-mini" selected>GPT-4o Mini (Fast & Cost-Effective)</option>
+                        <option value="openai/gpt-4o">GPT-4o (Smartest & Creative)</option>
+                        <option value="meta-llama/llama-3.1-8b-instruct:free">Llama 3.1 8B (Free / Open Source)</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label-row">
+                        <label for="tempSlider">Creativity (Temp)</label>
+                        <span id="tempVal">0.7</span>
+                    </div>
+                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7">
+                </div>
+
+                <div class="setting-group checkbox-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="voiceToggle">
+                        <span class="slider"></span>
+                    </label>
+                    <div class="toggle-label-desc">
+                        <span class="toggle-title">Voice Responses</span>
+                        <span class="toggle-desc">Mubashir will speak responses out loud</span>
+                    </div>
+                </div>
+
+                <div class="setting-group" id="voiceSelectGroup" style="display: none;">
+                    <label for="voiceSelect">Select Voice</label>
+                    <select id="voiceSelect">
+                        <!-- Dynamic options loaded via JS -->
+                    </select>
+                </div>
+
+                <div class="sidebar-actions">
+                    <button class="btn secondary-btn" id="clearHistoryBtn">
+                        <i data-lucide="trash-2"></i> Clear Chat History
+                    </button>
+                    <button class="btn secondary-btn" id="exportChatBtn">
+                        <i data-lucide="download"></i> Export Chat Log
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <p>Beyond Mubashir v1.0.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <!-- Chat Header -->
+            <header class="chat-header">
+                <div class="header-left">
+                    <button class="icon-btn menu-btn" id="openSidebarBtn" title="Open Settings">
+                        <i data-lucide="settings"></i>
+                    </button>
+                    <div class="bot-info">
+                        <div class="avatar-container">
+                            <div class="avatar-glow"></div>
+                            <div class="avatar-image">
+                                <!-- Modern SVG Avatar representing male/tech AI -->
+                                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#0ea5e9" />
+                                            <stop offset="100%" stop-color="#6366f1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="48" fill="url(#avatarGrad)" />
+                                    <!-- Stylized abstract face/tech details -->
+                                    <path d="M35 45 C35 38, 65 38, 65 45" stroke="#ffffff" stroke-width="4" stroke-linecap="round" />
+                                    <circle cx="40" cy="52" r="5" fill="#ffffff" />
+                                    <circle cx="60" cy="52" r="5" fill="#ffffff" />
+                                    <path d="M42 66 C42 66, 50 70, 58 66" stroke="#ffffff" stroke-width="4" stroke-linecap="round" />
+                                    <!-- Neural tech accents -->
+                                    <path d="M50 15 L50 25" stroke="rgba(255,255,255,0.6)" stroke-width="2" />
+                                    <circle cx="50" cy="15" r="3" fill="#ffffff" />
+                                </svg>
+                            </div>
+                            <div class="status-indicator online"></div>
+                        </div>
+                        <div class="bot-text">
+                            <span class="bot-name">Mubashir</span>
+                            <span class="bot-status" id="botStatusText">Online</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <span class="brand-badge">Beyond Mubashir</span>
+                </div>
+            </header>
+
+            <!-- Chat Messages Container -->
+            <div class="messages-container" id="messagesContainer">
+                <!-- Welcome/Intro Message -->
+                <div class="message bot-message intro-card">
+                    <div class="message-content">
+                        <h3>Welcome to Beyond Mubashir</h3>
+                        <p>Hello! I am Mubashir, your intelligent, personal AI companion. I'm here to assist you with creative projects, coding, solving complex challenges, or simply engaging in stimulating conversations. How can I help you excel today?</p>
+                        <div class="quick-prompts-label">Try asking me:</div>
+                        <div class="quick-prompts-grid" id="quickPromptsGrid">
+                            <button class="quick-prompt-btn">"What makes your persona unique?"</button>
+                            <button class="quick-prompt-btn">"Help me structure a fitness and focus routine."</button>
+                            <button class="quick-prompt-btn">"Write a short, engaging story about space exploration."</button>
+                            <button class="quick-prompt-btn">"Give me a productivity framework for high performers."</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator-wrapper" id="typingIndicator">
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="typing-text">Mubashir is formulating a response...</span>
+            </div>
+
+            <!-- Input Area -->
+            <footer class="chat-footer">
+                <div class="input-container">
+                    <textarea id="chatInput" placeholder="Message Mubashir..." rows="1"></textarea>
+                    <div class="input-actions">
+                        <button class="icon-btn action-btn voice-speak-btn" id="voiceMuteBtn" title="Toggle Mute Output">
+                            <i data-lucide="volume-2"></i>
+                        </button>
+                        <button class="send-btn" id="sendBtn" title="Send Message">
+                            <i data-lucide="arrow-up"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="footer-note">
+                    Beyond Mubashir AI uses OpenRouter API. All conversations are private.
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- API Key Entry Modal -->
+    <div class="modal-overlay" id="apiKeyModal">
+        <div class="modal">
+            <div class="modal-icon">
+                <i data-lucide="key-round"></i>
+            </div>
+            <h2>Enter OpenRouter API Key</h2>
+            <p>To begin chatting with Mubashir, please configure your OpenRouter API Key. It is stored securely in your browser's local storage and sent directly to OpenRouter.</p>
+            
+            <div class="modal-input-group">
+                <div class="input-with-action">
+                    <input type="password" id="modalApiKeyInput" placeholder="sk-or-v1-...">
+                    <button class="icon-btn toggle-visibility-btn" id="toggleModalKeyVisibility" title="Toggle Visibility">
+                        <i data-lucide="eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn primary-btn" id="saveApiKeyBtn">Start Chatting</button>
+            </div>
+            <div class="modal-footer">
+                Don't have an API Key? <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">Get one here <i data-lucide="external-link" style="width:12px;height:12px;display:inline-block;vertical-align:middle;"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS script -->
+    <script src="app.js"></script>
+</body>
+</html>
